@@ -1,57 +1,10 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saurav Ojha - Data Analyst</title>
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="particles-js"></div>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
     <header>
         <a href="#home" class="fixed-name">Saurav Ojha</a>
         <nav>
@@ -62,9 +15,11 @@
             <a href="#experience">Experience</a>
             <a href="#contact">Contact</a>
         </nav>
+        <button id="theme-toggle" class="theme-toggle"><i class="fas fa-adjust"></i></button>
     </header>
 
-    <section id="home" class="home" data-aos="fade-up">
+    <section id="home" class="home">
+        <canvas id="bgCanvas"></canvas>
         <div class="home-content">
             <h1>Hi, I'm <span>Saurav Ojha</span></h1>
             <div class="typing-text">
@@ -83,28 +38,28 @@
         </div>
     </section>
 
-    <section id="projects" class="projects" data-aos="fade-up">
+    <section id="projects" class="projects">
         <h2 class="section-title">My Projects</h2>
         <div class="projects-container">
-            <div class="project-card" data-aos="zoom-in">
+            <div class="project-card">
                 <div class="project-icon heart"><i class="fas fa-heart"></i></div>
                 <h3>Heart Disease Prediction</h3>
                 <p>Analyzed patient data to identify trends and improve healthcare outcomes.</p>
                 <a href="https://github.com/yourusername" target="_blank" class="project-link">View Project</a>
             </div>
-            <div class="project-card" data-aos="zoom-in" data-aos-delay="100">
+            <div class="project-card">
                 <div class="project-icon insurance"><i class="fas fa-shield-alt"></i></div>
                 <h3>Insurance Claims Prediction</h3>
                 <p>Developed a model to predict insurance claim likelihood.</p>
                 <a href="https://github.com/yourusername" target="_blank" class="project-link">View Project</a>
             </div>
-            <div class="project-card" data-aos="zoom-in" data-aos-delay="200">
+            <div class="project-card">
                 <div class="project-icon bike"><i class="fas fa-bicycle"></i></div>
                 <h3>Bike Rental Analysis</h3>
                 <p>Analyzed bike rental data to optimize inventory and pricing.</p>
                 <a href="https://github.com/yourusername" target="_blank" class="project-link">View Project</a>
             </div>
-            <div class="project-card" data-aos="zoom-in" data-aos-delay="300">
+            <div class="project-card">
                 <div class="project-icon house"><i class="fas fa-home"></i></div>
                 <h3>House Price Prediction</h3>
                 <p>Built a machine learning model to predict house prices based on various features.</p>
@@ -113,10 +68,10 @@
         </div>
     </section>
 
-    <section id="skills" class="skills" data-aos="fade-up">
+    <section id="skills" class="skills">
         <h2 class="section-title">My Skills</h2>
         <div class="skills-container">
-            <div class="skill-card" data-progress="90" data-aos="fade-up">
+            <div class="skill-card" data-progress="90">
                 <div class="skill-header">
                     <div class="skill-icon python"><i class="fab fa-python"></i></div>
                     <h3>Python</h3>
@@ -127,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div class="skill-card" data-progress="80" data-aos="fade-up" data-aos-delay="100">
+            <div class="skill-card" data-progress="80">
                 <div class="skill-header">
                     <div class="skill-icon powerbi"><i class="fas fa-chart-bar"></i></div>
                     <h3>Power BI</h3>
@@ -138,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <div class="skill-card" data-progress="90" data-aos="fade-up" data-aos-delay="200">
+            <div class="skill-card" data-progress="90">
                 <div class="skill-header">
                     <div class="skill-icon sql"><i class="fas fa-database"></i></div>
                     <h3>SQL</h3>
@@ -149,7 +104,7 @@
                     </div>
                 </div>
             </div>
-            <div class="skill-card" data-progress="80" data-aos="fade-up" data-aos-delay="300">
+            <div class="skill-card" data-progress="80">
                 <div class="skill-header">
                     <div class="skill-icon ml"><i class="fas fa-brain"></i></div>
                     <h3>Machine Learning</h3>
@@ -160,7 +115,7 @@
                     </div>
                 </div>
             </div>
-            <div class="skill-card" data-progress="80" data-aos="fade-up" data-aos-delay="400">
+            <div class="skill-card" data-progress="80">
                 <div class="skill-header">
                     <div class="skill-icon us-healthcare"><i class="fas fa-hospital"></i></div>
                     <h3>US Healthcare</h3>
@@ -171,7 +126,7 @@
                     </div>
                 </div>
             </div>
-            <div class="skill-card" data-progress="60" data-aos="fade-up" data-aos-delay="500">
+            <div class="skill-card" data-progress="60">
                 <div class="skill-header">
                     <div class="skill-icon graphic-design"><i class="fas fa-paint-brush"></i></div>
                     <h3>Graphic Design</h3>
@@ -182,7 +137,7 @@
                     </div>
                 </div>
             </div>
-            <div class="skill-card" data-progress="90" data-aos="fade-up" data-aos-delay="600">
+            <div class="skill-card" data-progress="90">
                 <div class="skill-header">
                     <div class="skill-icon ms-excel"><i class="fas fa-file-excel"></i></div>
                     <h3>MS Excel</h3>
@@ -193,7 +148,7 @@
                     </div>
                 </div>
             </div>
-            <div class="skill-card" data-progress="40" data-aos="fade-up" data-aos-delay="700">
+            <div class="skill-card" data-progress="40">
                 <div class="skill-header">
                     <div class="skill-icon html-css"><i class="fas fa-code"></i></div>
                     <h3>HTML & CSS</h3>
@@ -204,10 +159,21 @@
                     </div>
                 </div>
             </div>
+            <div class="skill-card" data-progress="85">
+                <div class="skill-header">
+                    <div class="skill-icon ds"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Data Science</h3>
+                </div>
+                <div class="skill-progress">
+                    <div class="progress-bar">
+                        <span class="progress-value">85%</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section id="education" class="section-timeline" data-aos="fade-up">
+    <section id="education" class="section-timeline">
         <h2 class="section-title">My Education</h2>
         <div class="timeline_component">
             <div class="timeline_progress">
@@ -270,7 +236,7 @@
         </div>
     </section>
 
-    <section id="experience" class="experience" data-aos="fade-up">
+    <section id="experience" class="experience">
         <h2 class="section-title">My Experience</h2>
         <div class="timeline_component">
             <div class="timeline_progress">
@@ -351,7 +317,8 @@
         </div>
     </section>
 
-    <section id="contact" class="contact" data-aos="fade-up">
+    <section id="contact" class="contact">
+        <canvas id="contactCanvas"></canvas>
         <h2 class="section-title">Contact Me</h2>
         <div class="contact-container">
             <div class="contact-content">
@@ -383,118 +350,8 @@
         </div>
     </section>
 
-    <footer>
+    <footer id="footer">
         <div class="footer-container">
             <div class="copyright">© 2024 Saurav Ojha. All rights reserved.</div>
         </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-        // Particles.js configuration for data science theme
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": ["#00D4FF", "#FF6F61", "#A1FF6B", "#FF2E63"] },
-                "shape": { "type": "circle", "stroke": { "width": 0 } },
-                "opacity": { "value": 0.5, "random": true },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.3, "width": 1 },
-                "move": { "enable": true, "speed": 4, "direction": "none", "random": false }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" } },
-                "modes": { "repulse": { "distance": 100, "duration": 0.4 } }
-            }
-        });
-
-        // AOS initialization
-        AOS.init({ duration: 1000 });
-
-        // Existing scroll and social icon scripts
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            const homeTitle = document.querySelector('.home-content h1');
-            const titleTop = homeTitle.getBoundingClientRect().top + window.pageYOffset;
-            const scrollPosition = window.pageYOffset;
-            const viewportHeight = window.innerHeight;
-
-            if (scrollPosition >= titleTop + homeTitle.offsetHeight) {
-                header.style.opacity = '0';
-                header.style.transform = 'translateY(-100%)';
-            } else {
-                header.style.opacity = '1';
-                header.style.transform = 'translateY(0)';
-            }
-
-            const timelineComponents = document.querySelectorAll('.timeline_component');
-            timelineComponents.forEach(component => {
-                const componentTop = component.getBoundingClientRect().top + window.pageYOffset;
-                const componentHeight = component.offsetHeight;
-
-                let progress = 0;
-                if (scrollPosition + viewportHeight > componentTop) {
-                    const scrolledDistance = scrollPosition + viewportHeight - componentTop;
-                    progress = Math.min((scrolledDistance / componentHeight) * 100, 100);
-                }
-                progress = Math.max(progress, 0);
-
-                component.querySelector('.timeline_progress-bar').style.height = `${progress}%`;
-
-                const items = component.querySelectorAll('.timeline_item');
-                items.forEach(item => {
-                    const itemTop = item.getBoundingClientRect().top;
-                    if (itemTop < viewportHeight * 0.8) {
-                        item.classList.add('visible');
-                    }
-                });
-            });
-
-            const skillCards = document.querySelectorAll('.skill-card');
-            skillCards.forEach(card => {
-                const cardTop = card.getBoundingClientRect().top;
-                const progressBar = card.querySelector('.progress-bar');
-                const progressValue = card.getAttribute('data-progress');
-
-                if (cardTop < window.innerHeight * 0.8 && !progressBar.classList.contains('animated')) {
-                    progressBar.style.width = `${progressValue}%`;
-                    progressBar.classList.add('animated');
-                }
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const socialIcons = document.querySelectorAll('.social-icons a');
-            let lastClickTime = 0;
-            const debounceDelay = 300;
-
-            socialIcons.forEach(icon => {
-                icon.addEventListener('click', (e) => {
-                    const now = Date.now();
-                    if (now - lastClickTime < debounceDelay) {
-                        e.preventDefault();
-                        return;
-                    }
-                    lastClickTime = now;
-
-                    const href = icon.getAttribute('data-href');
-                    if (href) {
-                        e.preventDefault();
-                        window.open(href, '_blank');
-                    }
-                });
-
-                icon.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    const href = icon.getAttribute('data-href');
-                    if (href) {
-                        window.open(href, '_blank');
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
